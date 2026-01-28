@@ -1,0 +1,355 @@
+{% load static %} {% load humanize %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Dashboard | Amba Pande</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link
+      href="https://cdn.quilljs.com/1.3.6/quill.snow.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+  </head>
+  <body>
+    <header class="header admin-header">
+      <div class="header-left">
+        <span class="name">Admin Dashboard</span>
+      </div>
+      <nav class="header-right">
+        <a href="{% url 'admin_upload_pdf' %}" class="auth-link">
+          Upload PDF
+        </a>
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'logout' %}">Logout</a>
+      </nav>
+    </header>
+
+    <main class="admin-container">
+      <!-- ACCESS LOGS -->
+      <section class="admin-card">
+        <h2>PDF Access Logs</h2>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Email</th>
+              <th>PDF</th>
+              <th>Last Access</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for log in logs %}
+            <tr>
+              <td>{{ log.visitor.name }}</td>
+              <td>{{ log.visitor.email }}</td>
+              <td>{{ log.paper.title }}</td>
+              <td>{{ log.accessed_at|naturaltime }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4">No access logs yet</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+
+      <!-- USERS -->
+      <section class="admin-card">
+        <h2>Registered Users</h2>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Last Login</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+            <tr>
+              <td>{{ user.name }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.last_login|naturaltime|default:"Never" }}</td>
+              <td>
+                <button onclick="toggleBlock({{ user.id }})">
+                  Block / Unblock
+                </button>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4">No users found</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+      <section class="admin-card">
+        <h2>Conferences & Awards</h2>
+
+        <form
+          method="POST"
+          action="{% url 'admin_gallery_add' %}"
+          enctype="multipart/form-data"
+          class="gallery-form"
+        >
+          {% csrf_token %}
+
+          <input
+            type="text"
+            name="title"
+            placeholder="Event title (Conference / Award)"
+            required
+          />
+
+          <input type="file" name="images" multiple accept="image/*" required />
+
+          <button class="btn btn-add">➕ Add Event</button>
+        </form>
+
+        {% if gallery_events %} {% for event in gallery_events %}
+        <div class="admin-event">
+          <strong>{{ event.title }}</strong>
+
+          <div class="admin-event-actions">
+            <a onclick="deleteGallery({{event.id}})" class="btn btn-delete">
+              🗑 Delete
+            </a>
+          </div>
+
+          <div class="admin-thumb-grid">
+            {% for img in event.images.all %}
+            <img src="{{ img.image.url }}" />
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %} {% else %}
+        <p class="muted">No events added yet.</p>
+        {% endif %}
+      </section>
+
+      <section class="admin-card">
+        <h2>Manage PDFs</h2>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Category</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for paper in papers %}
+            <tr>
+              <td>{{ paper.title }}</td>
+              <td>{{ paper.category|title }}</td>
+              <td>
+                <div class="action-buttons">
+                  <a
+                    href="{% url 'admin_edit_pdf' paper.id %}"
+                    class="btn btn-edit"
+                    >Edit</a
+                  >
+                  <button
+                    onclick="deletePDF({{ paper.id }})"
+                    class="btn btn-delete"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="3">No PDFs uploaded</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+      <section class="admin-card desk-editor">
+        <div class="desk-header">
+          <div>
+            <h2>Desk Reflections</h2>
+            <p class="muted">
+              Write and manage personal reflections that appear on the homepage.
+            </p>
+          </div>
+
+          <button class="btn btn-primary" onclick="resetBlogForm()">
+            ✍ New Reflection
+          </button>
+        </div>
+
+        <form id="blogForm" class="desk-form" enctype="multipart/form-data">
+          <input type="hidden" id="blogId" />
+
+          <div class="form-group">
+            <label>Title</label>
+            <input type="text" id="blogTitle" placeholder="Reflection title" />
+          </div>
+
+          <div class="form-group">
+            <label>Summary</label>
+            <textarea
+              id="blogSummary"
+              placeholder="Short teaser shown on homepage"
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Reflection Content</label>
+            <div id="blogEditor" class="editor-box"></div>
+          </div>
+
+          <div class="form-footer">
+            <input type="file" id="blogImage" />
+            <div class="form-actions">
+              <button type="submit" class="btn btn-edit">Save</button>
+              <button
+                type="button"
+                class="btn btn-ghost"
+                onclick="resetBlogForm()"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <hr class="soft-divider" />
+
+        <div id="adminBlogList" class="blog-admin-list"></div>
+      </section>
+    </main>
+
+    <script>
+      function toggleBlock(id) {
+        fetch(`/api/toggle-block/${id}/`, { method: "POST" }).then(() =>
+          location.reload(),
+        );
+        function deletePDF(id) {
+          if (!confirm("Delete this PDF permanently?")) return;
+
+          fetch(`/api/admin-delete-pdf/${id}/`, {
+            method: "POST",
+            headers: { "X-CSRFToken": "{{ csrf_token }}" },
+          }).then(() => location.reload());
+        }
+      }
+      let editingBlogId = null;
+
+      function loadBlogs() {
+        fetch("/api/admin/blog/list/")
+          .then((res) => res.json())
+          .then((data) => {
+            const container = document.getElementById("adminBlogList");
+            container.innerHTML = "";
+
+            data.blogs.forEach((blog) => {
+              const div = document.createElement("div");
+              div.innerHTML = `
+          <h4>${blog.title}</h4>
+          <p>${blog.summary}</p>
+          <button class="btn btn-edit" onclick="editBlog(${blog.id}, '${blog.title}', '${blog.summary}')">Edit</button>
+          <button class="btn btn-delete" onclick="deleteBlog(${blog.id})">Delete</button>
+          <hr>
+        `;
+              container.appendChild(div);
+            });
+          });
+      }
+
+      function editBlog(id, title, summary, content) {
+        editingBlogId = id;
+        blogTitle.value = title;
+        blogSummary.value = summary;
+        quill.root.innerHTML = content;
+      }
+
+      function deleteBlog(id) {
+        if (!confirm("Delete this blog?")) return;
+
+        fetch(`/api/admin/blog/delete/${id}/`, { method: "POST" }).then(() =>
+          loadBlogs(),
+        );
+      }
+
+      function resetBlogForm() {
+        editingBlogId = null;
+        document.getElementById("blogForm").reset();
+      }
+
+      document
+        .getElementById("blogForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const formData = new FormData();
+          formData.append("title", blogTitle.value);
+          formData.append("summary", blogSummary.value);
+          formData.append("content", quill.root.innerHTML);
+          if (blogImage.files[0]) formData.append("image", blogImage.files[0]);
+
+          const url = editingBlogId
+            ? `/api/admin/blog/update/${editingBlogId}/`
+            : "/api/admin/blog/create/";
+
+          fetch(url, { method: "POST", body: formData }).then(() => {
+            resetBlogForm();
+            loadBlogs();
+          });
+        });
+
+      loadBlogs();
+
+      const quill = new Quill("#blogEditor", {
+        theme: "snow",
+        placeholder: "Write the reflection here...",
+        modules: {
+          toolbar: [
+            [{ header: [1, 2, false] }],
+            ["bold", "italic", "underline"],
+            [{ list: "ordered" }, { list: "bullet" }],
+            ["link", "blockquote"],
+            ["clean"],
+          ],
+        },
+      });
+      document
+        .getElementById("galleryImages")
+        .addEventListener("change", function () {
+          const container = document.getElementById("captionContainer");
+          container.innerHTML = "";
+
+          Array.from(this.files).forEach((file, index) => {
+            const div = document.createElement("div");
+            div.className = "gallery-caption-row";
+            div.innerHTML = `
+      <label>Caption for ${file.name}</label>
+      <input type="text"
+             name="captions"
+             placeholder="Optional image caption">
+    `;
+            container.appendChild(div);
+          });
+        });
+      function deleteGallery(id) {
+        if (!confirm("Delete this entire event and all images?")) return;
+
+        fetch(`/dashboard/gallery/delete/${id}/`, {
+          method: "POST",
+          headers: { "X-CSRFToken": "{{ csrf_token }}" },
+        }).then(() => location.reload());
+      }
+    </script>
+  </body>
+</html>

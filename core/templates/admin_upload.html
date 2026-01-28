@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload PDF</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<header class="header admin-header">
+    <div class="header-left">
+        <span class="name">Upload PDF</span>
+    </div>
+    <nav class="header-right">
+        <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+        <a href="{% url 'logout' %}" class="auth-link">Logout</a>
+    </nav>
+</header>
+
+<section class="auth-container">
+    <h2>Upload New PDF</h2>
+
+    <form method="post" enctype="multipart/form-data" class="auth-form">
+        {% csrf_token %}
+
+        <label>Title</label>
+        <input type="text" name="title" required>
+
+        <label>Category</label>
+        <select name="category" required style="width:100%; padding:12px; margin-bottom:20px;">
+            <option value="">Select</option>
+            <option value="book">Book</option>
+            <option value="publication">Publication</option>
+        </select>
+
+        <label>PDF File</label>
+        <input type="file" name="pdf" accept="application/pdf" required>
+
+        <button type="submit">Upload PDF</button>
+    </form>
+</section>
+
+</body>
+</html>

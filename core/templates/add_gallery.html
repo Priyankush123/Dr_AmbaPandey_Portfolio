@@ -1,0 +1,15 @@
+<h2>Add Gallery</h2>
+
+<form action="/admin/gallery/add/" method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+
+  <label>Gallery Title</label>
+  <input type="text" name="title" required>
+
+  <label>Upload Images</label>
+  <input type="file" name="images" multiple required>
+
+  <button type="submit">Save</button>
+</form>
+
+<a href="/admin/dashboard/">⬅ Back</a>

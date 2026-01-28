@@ -1,0 +1,549 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Dr. Amba Pande is Scholar and Documantation/Research Officer of International Studies at JNU, specializing in migration, diaspora, gender studies, and transnationalism."
+    />
+    <meta
+      name="keywords"
+      content="Amba Pande, Scholar, Indian Diaspora, Migration Studies, Gender Studies, International Studies"
+    />
+    <meta name="author" content="Dr. Amba Pande" />
+    <title>Dr. Amba Pande | Academic Portfolio</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <script src="{% static 'js/script.js' %}" defer></script>
+  </head>
+  <body>
+    <div id="blogOverlay" class="blog-overlay">
+  <div class="blog-panel">
+    <button class="close-panel" onclick="closeBlog()">← Back</button>
+
+    <h1 id="panelTitle"></h1>
+    <p class="panel-date" id="panelDate"></p>
+
+    <div id="panelContent" class="panel-content"></div>
+  </div>
+</div>
+    <!-- ================= HEADER ================= -->
+    <header class="header">
+      <div class="header-left">
+        <div class="dot"></div>
+        <span class="name">Dr. Amba Pande</span>
+        <span class="role"
+          >Documentation Officer, School of International Studies, JNU</span
+        >
+      </div>
+
+      <button
+        class="menu-toggle"
+        id="menuToggle"
+        aria-label="Toggle menu"
+        aria-expanded="false"
+      >
+        ☰
+      </button>
+
+      <nav class="header-right" id="navMenu">
+        <a href="#about">About</a>
+        <a href="#profile">Research</a>
+        <a href="#selected-works">Selected Works</a>
+        <a href="#publications">Publications</a>
+        <a href="#books">Books</a>
+        <a href="#contact">Contact</a>
+        {% if request.session.is_admin %}
+        <a href="{% url 'admin_dashboard' %}" class="auth-link">Dashboard</a>
+        {% endif %} {% if request.session.visitor_id %}
+        <a href="{% url 'logout' %}" class="auth-link">Logout</a>
+        {% else %}
+        <a href="{% url 'login' %}" class="auth-link">Login</a>
+        {% endif %}
+      </nav>
+    </header>
+
+    <!-- ================= HERO ================= -->
+    <section class="main">
+      <div class="image-container">
+        <img src="{% static 'images/DP.jpeg' %}" alt="Dr. Amba Pande" />
+      </div>
+
+      <div class="content">
+        <h1>Dr. Amba Pande</h1>
+        <h3>Scholar of Diaspora & Migration Studies</h3>
+
+        <p>
+          Dr. Amba Pande is a scholar of Diaspora & Migration Studies. And She works as Documentation/Research Officer at the School of International Studies,
+          Jawaharlal Nehru University, New Delhi. Her scholarship examines the
+          intersections of migration, diaspora, gender, and transnationalism,
+          with a particular focus on the Indo-Pacific region.
+        </p>
+
+        <div class="buttons">
+          <a href="#about" class="circle green">About</a>
+          <a href="#selected-works" class="circle orange">Works</a>
+          <a href="#publications" class="circle blue">Publications</a>
+          <a href="#contact" class="circle grey">Contact</a>
+        </div>
+      </div>
+    </section>
+    <section id="desk" class="section desk-compact">
+  <h3 class="desk-title">From the Desk of Dr. Amba Pande</h3>
+  <p class="desk-subtitle">
+    Reflections on society, migration, and public discourse
+  </p>
+
+  <div class="desk-grid">
+    {% for blog in blogs %}
+    <article class="desk-card"
+      onclick="openBlog(
+        '{{ blog.title|escapejs }}',
+        '{{ blog.created_at|date:"F d, Y" }}',
+        '{{ blog.content|linebreaksbr|escapejs }}'
+      )">
+
+      {% if blog.image %}
+      <div class="desk-image">
+        <img src="{{ blog.image.url }}" alt="{{ blog.title }}">
+      </div>
+      {% endif %}
+
+      <div class="desk-content">
+        <h4>{{ blog.title }}</h4>
+        <p>{{ blog.summary }}</p>
+        <span class="desk-read">Read →</span>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+
+
+
+    <!-- ================= ABOUT ================= -->
+    <section id="about" class="section">
+      <h2>About</h2>
+
+      <p>
+        Dr. Amba Pande holds an M.Phil. and Ph.D. in International Studies from
+        Jawaharlal Nehru University. She has contributed extensively to
+        <b>research, teaching and academic programs </b>at the
+        School of International Studies, JNU.
+      </p>
+
+      <p>
+        Her research interests include the Indian Diaspora, international
+        migration, transnationalism, and gender studies. Her work integrates
+        <b>historical, political, sociological and Contemporary</b> perspectives to examine mobility
+        and identity across global contexts.
+      </p>
+      <p>
+        She is <b>Scholar of Migration & Diaspora Studies</b>. She works as a Documentation/Research Officer <b>as equivalent as Associate Professor</b>.
+      </p>
+    </section>
+    <section id="qualifications" class="section">
+      <h2>Academic Qualifications</h2>
+
+      <ul class="styled-list">
+        <li>
+          <strong>Ph.D. (1999)</strong><br />
+          School of International Studies, Jawaharlal Nehru University (JNU),
+          New Delhi
+        </li>
+
+        <li>
+          <strong>M.Phil. (1992)</strong><br />
+          Centre for the Study of East Asian and West Pacific Studies
+          (CSEASWPS), SIS, JNU, New Delhi
+        </li>
+
+        <li>
+          <strong>M.A. in History (1988)</strong><br />
+          University of Lucknow, Uttar Pradesh, India
+        </li>
+
+        <li>
+          <strong>B.A. (1985)</strong><br />
+          Banaras Hindu University (BHU), Varanasi, Uttar Pradesh, India
+        </li>
+        <li>
+          <strong>10+2th</strong><br />
+          Vasanta College for Women, Krishnamurti Foundation, Varanasi
+        </li>
+        <li>
+          <strong>10th</strong><br />
+          Rajghat Besant School Krishnamurti Foundation, Varanasi
+        </li>
+      </ul>
+    </section>
+
+    <!-- ================= RESEARCH PROFILE ================= -->
+    <section id="profile" class="section">
+      <h2>Academic & Research Profile</h2>
+
+      <p>
+        Dr. Pande has served as Visiting Faculty and Research Scholar at leading
+        international institutions, including the University of Amsterdam
+        (Netherlands), the University of the South Pacific (Fiji), and the
+        University of Otago (New Zealand).
+      </p>
+
+      <p>
+        She has led major research projects on the Indian Diaspora in Fiji,
+        Myanmar, and Southeast Asia, sponsored by the Indian Council of Social
+        Science Research (ICSSR), the University Grants Commission (UGC), and
+        the Indian Council of Historical Research (ICHR).
+      </p>
+    </section>
+
+    <!-- ================= SELECTED WORKS (VISUAL) ================= -->
+    <section id="selected-works" class="section">
+      <h2>Selected Works</h2>
+
+      <div class="works-grid">
+        <div class="work-card">
+          <h4>Regional Security in Southeast Asia and the Pacific</h4>
+          <p>
+            Authored monograph examining strategic and regional security
+            dynamics.
+          </p>
+        </div>
+
+        <div class="work-card">
+          <h4>Migration and the Rise of the United States</h4>
+          <p>Co-edited volume, Edinburgh University Press, 2024.</p>
+        </div>
+
+        <div class="work-card">
+          <h4>Women in the Indian Diaspora</h4>
+          <p>Springer, Singapore — Gendered migration histories.</p>
+        </div>
+
+        <div class="work-card">
+          <h4>Indenture, Gender & Post-Colonial Mobility</h4>
+          <p>Edited volumes with Routledge and Springer.</p>
+        </div>
+      </div>
+    </section>
+    <section id="visiting-fellowships" class="section">
+      <h2>Visiting Fellowships & Academic Appointments</h2>
+
+      <ul class="styled-list">
+        <li>
+          <strong>Guest Lecturer (2024)</strong><br />
+          Anton de Kom Universiteit van Suriname, Paramaribo, Suriname
+        </li>
+
+        <li>
+          <strong>Fellow (2011)</strong><br />
+          Department of Business Economics, University of the South Pacific,
+          Suva, Fiji (USP Fellowship)
+        </li>
+
+        <li>
+          <strong>Visiting Fellow (2011)</strong><br />
+          Department of Anthropology and Archaeology, University of Otago,
+          Dunedin, New Zealand (University of Otago Fellowship)
+        </li>
+
+        <li>
+          <strong>Indo-Dutch Fellow (2005)</strong><br />
+          International Institute of Asian Studies (IIAS), The Netherlands<br />
+          <em>Project:</em> “The Role of the Indian Diaspora in
+          India–Netherlands Relations”
+        </li>
+      </ul>
+    </section>
+
+    <section id="timeline" class="section">
+      <h2>Academic Career Timeline</h2>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <span class="timeline-year">1985</span>
+          <div class="timeline-content">
+            <h4>B.A. – Banaras Hindu University</h4>
+            <p>Varanasi, Uttar Pradesh, India</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <span class="timeline-year">1988</span>
+          <div class="timeline-content">
+            <h4>M.A. in History</h4>
+            <p>Lucknow University, Uttar Pradesh</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <span class="timeline-year">1992</span>
+          <div class="timeline-content">
+            <h4>M.Phil. – International Studies</h4>
+            <p>SIS, Jawaharlal Nehru University</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <span class="timeline-year">1999</span>
+          <div class="timeline-content">
+            <h4>Ph.D. – International Studies</h4>
+            <p>School of International Studies, JNU</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <span class="timeline-year">2005</span>
+          <div class="timeline-content">
+            <h4>Indo-Dutch Fellowship</h4>
+            <p>International Institute of Asian Studies, Netherlands</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <span class="timeline-year">2011</span>
+          <div class="timeline-content">
+            <h4>Visiting Fellowships</h4>
+            <p>University of the South Pacific & University of Otago</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <span class="timeline-year">2024</span>
+          <div class="timeline-content">
+            <h4>International Recognition</h4>
+            <p>Top Diaspora Scholar – ScholarGPS360</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="gallery" class="section">
+  <h2 class="section-title">Conferences & Awards</h2>
+
+  {% for event in gallery_events %}
+  <div class="gallery-event">
+    <h3 class="gallery-title">{{ event.title }}</h3>
+    <p class="gallery-description">{{ event.description }}</p>
+
+    <div class="gallery-grid">
+      {% for img in event.images.all %}
+        <img src="{{ img.image.url }}" alt="{{ event.title }}">
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+</section>
+
+
+
+    <!-- ================= PUBLICATIONS (COLLAPSIBLE) ================= -->
+    <section id="publications" class="section">
+      <h2>Selected Journal Publications</h2>
+
+      <details>
+        <summary>View Selected Publications</summary>
+        <ul>
+          <li>Pande, A. — Migration, gender, and transnational identities.</li>
+          <li>Pande, A. — Diaspora politics in the Indo-Pacific.</li>
+          <li>Pande, A. — Women, mobility, and post-indenture societies.</li>
+        </ul>
+
+        <p class="note">
+          (A complete list of publications is available upon request.)
+        </p>
+      </details>
+    </section>
+
+    <!-- ================= BOOKS (COLLAPSIBLE) ================= -->
+    <section id="books" class="section">
+      <h2>Books & Edited Volumes</h2>
+
+      <details>
+        <summary>View Books & Edited Volumes</summary>
+        <ul>
+          <li>
+            <strong>Regional Security in Southeast Asia and the Pacific</strong>
+          </li>
+          <li>
+            <strong>Migration and the Rise of the United States</strong> —
+            Edinburgh University Press
+          </li>
+          <li>
+            <strong>Women in the Indian Diaspora</strong> — Springer, Singapore
+          </li>
+          <li>
+            <strong>Indentured and Post-Indentured Experiences</strong> —
+            Springer
+          </li>
+          <li>
+            <strong
+              >Women, Gender, and the Legacy of Slavery and Indenture</strong
+            >
+            — Routledge
+          </li>
+        </ul>
+      </details>
+    </section>
+    <section id="major-projects" class="section">
+      <h2>Completed Major Research Projects</h2>
+
+      <ul class="styled-list">
+        <li>
+          <strong
+            >India–Myanmar Relations and the Diaspora: Asset or
+            Liability</strong
+          >
+          (2018–2020)<br />
+          Sponsored by the Indian Council of Social Science Research (ICSSR),
+          New Delhi
+        </li>
+
+        <li>
+          <strong
+            >Ethnic Conflict in Fiji: Challenges for the Indian Diaspora</strong
+          ><br />
+          Sponsored by the University Grants Commission (UGC), India
+        </li>
+
+        <li>
+          <strong>India and its Diaspora in South East Asia</strong><br />
+          ICSSR Fellowship (Two-year fellowship with full pay protection)
+        </li>
+
+        <li>
+          Visiting Fellowship — Department of Business Economics, University of
+          the South Pacific, Suva, Fiji (USP Fellowship, 2011)
+        </li>
+
+        <li>
+          Visiting Fellowship — Department of Anthropology and Archaeology,
+          University of Otago, Dunedin, New Zealand (2011)
+        </li>
+
+        <li>
+          Indo-Dutch Visiting Fellowship (2005) — International Institute of
+          Asian Studies, The Netherlands<br />
+          <em>Project:</em> “The Role of the Indian Diaspora in
+          India–Netherlands Relations”
+        </li>
+      </ul>
+
+      <h2>Minor Research Projects & Research Grants</h2>
+
+      <ul class="styled-list">
+        <li>
+          Research Grant (2003) — Indian Council for Historical Research
+          (ICHR)<br />
+          Field research on the Indian Diaspora in Fiji
+        </li>
+
+        <li>
+          Research Grant (2003) — Ministry of External Affairs, Government of
+          India<br />
+          Field visits to Australia and Singapore to study the Indian Diaspora
+        </li>
+      </ul>
+    </section>
+
+    <section id="pdf-library" class="section">
+      <h2>Research Papers & PDFs</h2>
+
+      {% if publications %}
+      <ul class="styled-list">
+        {% for paper in publications %}
+        <li>
+          {{ paper.title }} — {% if request.session.visitor_id %}
+          <a
+            href="{% url 'view_pdf' paper.id %}"
+            target="_blank"
+            class="links_edit"
+          >
+            View PDF
+          </a>
+          {% else %}
+          <a
+            href="{% url 'login' %}"
+            class="links_edit"
+            title="Login required to access PDF"
+          >
+            View PDF (Login Required)
+          </a>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p>No PDFs available.</p>
+      {% endif %}
+    </section>
+
+    <section id="awards" class="section">
+      <h2>Awards & Recognitions</h2>
+
+      <ul class="styled-list">
+        <li>
+          Ranked among the
+          <strong>Top Scholars of 2024 in Diaspora Studies</strong> by
+          ScholarGPS360 — Ranked <strong>#39 worldwide</strong> (Top 0.36%) and
+          <strong>#2 in India</strong>.
+        </li>
+        <li>
+          Was recognised for making immense contributions promoting <b>global girmitiyalogy awareness</b> by <b>GLOBAL GIRMITIYA LINEAGE ARCHIVE & SEARCHING CENTRE (GGLASC)</b>
+        </li>
+        <li>
+          Ranked <strong>#22 worldwide in Quality</strong> (Top 0.32%) and
+          <strong>#76 worldwide in Productivity</strong> (Top 0.71%) in Diaspora
+          Studies.
+        </li>
+
+        <li>
+          Ranked <strong>#36 worldwide (2023)</strong> in the field of Diaspora.
+        </li>
+
+        <li>
+          <strong>I-Index: 12</strong> &nbsp;|&nbsp;
+          <strong>H-Index: 14</strong>
+        </li>
+
+        <li>
+          Recipient of the <strong>Parampara Awards 2024</strong>, Parichay
+          Foundation, Odisha.
+        </li>
+
+        <li>
+          Presently co-guiding a Ph.D. scholar at Lucknow University on
+          <em>“Conditions of Indians in Mauritius (1885–1920)”</em>.
+        </li>
+
+        <li>
+          Mentored several postgraduate and doctoral students on
+          diaspora-related research projects.
+        </li>
+      </ul>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer id="contact">
+      <div>
+        <strong>Email</strong><br />
+        ambapande@gmail.com
+      </div>
+
+      <div>
+        <strong>Affiliation</strong><br />
+        Jawaharlal Nehru University, New Delhi
+      </div>
+
+      <div>
+        <strong>Linked In</strong><br />
+        <a
+          href="https://www.linkedin.com/in/amba-pande-876a5652/"
+          class="links_edit"
+          >View Profile</a
+        >
+      </div>
+    </footer>
+  </body>
+</html>

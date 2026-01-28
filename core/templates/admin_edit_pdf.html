@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<title>Edit PDF</title>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<header class="header admin-header">
+    <div class="header-left">
+        <span class="name">Edit PDF</span>
+    </div>
+</header>
+
+<section class="auth-container">
+<form method="post" enctype="multipart/form-data" class="auth-form">
+{% csrf_token %}
+
+<label>Title</label>
+<input type="text" name="title" value="{{ paper.title }}" required>
+
+<label>Category</label>
+<select name="category" required>
+    <option value="book" {% if paper.category == "book" %}selected{% endif %}>Book</option>
+    <option value="publication" {% if paper.category == "publication" %}selected{% endif %}>Publication</option>
+</select>
+
+<label>Replace PDF (optional)</label>
+<input type="file" name="pdf" accept="application/pdf">
+
+<button type="submit">Save Changes</button>
+</form>
+</section>
+
+</body>
+</html>

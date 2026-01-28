@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Amba Pande</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body class="auth-page">
+
+<header class="header auth-header">
+    <div class="header-left">
+        <div class="dot"></div>
+        <span class="name">Amba Pande</span>
+    </div>
+</header>
+
+<!-- ================= REGISTER FORM ================= -->
+<section class="auth-container">
+    <h2>Register</h2>
+    <p class="auth-text">
+        Register to access academic publications and books.
+    </p>
+
+    <form class="auth-form" id="registerForm">
+
+        <!-- NAME -->
+        <label for="name">Name</label>
+        <input
+            type="text"
+            id="name"
+            placeholder="Your full name"
+            required
+        >
+
+        <!-- EMAIL -->
+        <label for="email">Email</label>
+        <input
+            type="email"
+            id="email"
+            placeholder="Your institutional or personal email"
+            required
+        >
+
+        <!-- SEND OTP -->
+        <button
+            type="button"
+            id="sendOtpBtn"
+            class="primary-btn"
+        >
+            Verify Email
+        </button>
+
+        <!-- OTP SECTION -->
+        <div id="otpSection" class="otp-section" style="display:none;">
+            <label for="otp">Enter OTP</label>
+            <input
+                type="text"
+                id="otp"
+                placeholder="6-digit OTP"
+            >
+
+            <button
+                type="button"
+                id="registerBtn"
+                class="primary-btn"
+            >
+                Complete Registration
+            </button>
+        </div>
+
+    </form>
+
+    <p class="auth-switch">
+        Already registered?
+        <a href="{% url 'login' %}">Login here</a>
+    </p>
+</section>
+
+<!-- ================= JS ================= -->
+<script src="{% static 'js/script.js' %}"></script>
+
+</body>
+</html>

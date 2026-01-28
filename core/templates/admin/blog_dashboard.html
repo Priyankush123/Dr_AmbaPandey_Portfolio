@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Blog Dashboard</title>
+</head>
+<body>
+
+<h1>From the Desk of Dr. Amba Pande</h1>
+
+<a href="{% url 'admin_blog_add' %}">➕ Add New Reflection</a>
+
+<hr>
+
+{% for blog in blogs %}
+    <div style="margin-bottom:20px;">
+        <h3>{{ blog.title }}</h3>
+        <p>{{ blog.summary }}</p>
+
+        <a href="{% url 'admin_blog_edit' blog.id %}">✏️ Edit</a>
+        <button onclick="deleteBlog({{ blog.id }})">🗑 Delete</button>
+    </div>
+{% empty %}
+    <p>No blogs yet.</p>
+{% endfor %}
+
+<script>
+function deleteBlog(id) {
+    if (!confirm("Delete this blog?")) return;
+
+    fetch(`/dashboard/blogs/delete/${id}/`, {
+        method: "POST",
+        headers: { "X-CSRFToken": "{{ csrf_token }}" }
+    })
+    .then(res => res.json())
+    .then(() => location.reload());
+}
+</script>
+
+</body>
+</html>

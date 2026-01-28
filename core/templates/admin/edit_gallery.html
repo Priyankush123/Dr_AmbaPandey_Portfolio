@@ -1,0 +1,22 @@
+<h2>Edit Gallery</h2>
+
+<form action="/admin/gallery/edit/{{ gallery.id }}/"
+      method="POST"
+      enctype="multipart/form-data">
+  {% csrf_token %}
+
+  <label>Gallery Title</label>
+  <input type="text" name="title" value="{{ gallery.title }}" required>
+
+  <label>Add More Images</label>
+  <input type="file" name="images" multiple>
+
+  <h4>Existing Images</h4>
+  {% for img in gallery.images.all %}
+    <img src="{{ img.image.url }}" width="80">
+  {% endfor %}
+
+  <button type="submit">Update</button>
+</form>
+
+<a href="/admin/dashboard/">⬅ Back</a>
