@@ -709,13 +709,26 @@ footer {
 }
 
 .gallery-event {
-  margin-bottom: 50px;
+  margin-bottom: 60px;
 }
 
 .gallery-title {
   font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 8px;
+  font-weight: 600;
+  margin-bottom: 18px;
+  color: #1f3a5f;
+  letter-spacing: 0.3px;
+  position: relative;
+}
+.gallery-title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 64px;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 2px;
 }
 
 .gallery-description {
