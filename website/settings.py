@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-^9y!k41ekchiy$#om@vl4zopyyonl(mfpa3swo737%wr8&w)f!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -159,7 +159,7 @@ SESSION_SAVE_EVERY_REQUEST = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 
-ADMIN_EMAIL = "ambapandey@gmail.com"   # change later if needed
+ADMIN_EMAIL = "priyankushb0@gmail.com"   # change later if needed
 
 
 
