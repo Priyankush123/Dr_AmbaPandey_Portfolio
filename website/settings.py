@@ -27,9 +27,17 @@ SECRET_KEY = 'django-insecure-^9y!k41ekchiy$#om@vl4zopyyonl(mfpa3swo737%wr8&w)f!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["drambapandey.in",
-                 "www.drambapandey.in",
-                 "https://dr-ambapandey-portfolio.onrender.com"]
+ALLOWED_HOSTS = [
+    ".onrender.com",
+    "drambapandey.in",
+    "www.drambapandey.in",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://drambapandey.in",
+    "https://www.drambapandey.in",
+]
+
 
 
 # Application definition
