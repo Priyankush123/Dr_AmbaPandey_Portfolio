@@ -28,7 +28,8 @@ SECRET_KEY = 'django-insecure-^9y!k41ekchiy$#om@vl4zopyyonl(mfpa3swo737%wr8&w)f!
 DEBUG = False
 
 ALLOWED_HOSTS = ["drambapandey.in",
-                 "www.drambapandey.in",]
+                 "www.drambapandey.in",
+                 "https://dr-ambapandey-portfolio.onrender.com"]
 
 
 # Application definition
