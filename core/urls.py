@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
 
@@ -48,3 +50,8 @@ urlpatterns = [
     path("dashboard/gallery/delete/<int:event_id>/", views.admin_gallery_delete, name="admin_gallery_delete"),
 
 ]
+if settings.DEBUG is False:
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT
+    )
