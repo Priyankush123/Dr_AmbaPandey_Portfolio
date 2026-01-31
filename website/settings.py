@@ -87,7 +87,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'core',
     'django.contrib.humanize',
-    "django_ratelimit",
 ]
 
 MIDDLEWARE = [
