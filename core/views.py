@@ -157,7 +157,6 @@ def logout_view(request):
 # ==========================
 # OTP REGISTRATION
 # ==========================
-
 def send_otp(request):
     if request.method != "POST":
         return JsonResponse({"status": "invalid_method"})
