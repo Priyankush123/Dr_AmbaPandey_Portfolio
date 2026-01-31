@@ -32,9 +32,9 @@ DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 
 ALLOWED_HOSTS = [
-     "https://drambapandey.in",
-    "https://www.drambapandey.in",
-    "https://*.onrender.com",
+     "drambapandey.in",
+    "www.drambapandey.in",
+    ".onrender.com",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
