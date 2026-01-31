@@ -53,6 +53,20 @@ DATABASES = {
     )
 }
 
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+SESSION_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SAMESITE = "Lax"
+
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
+SECURE_SSL_REDIRECT = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+X_FRAME_OPTIONS = "DENY"
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = True
 
 
 # Application definition
@@ -126,6 +140,19 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# CLOUDINARY
+INSTALLED_APPS += ["cloudinary", "cloudinary_storage"]
+
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+
+CLOUDINARY_CLOUD_NAME = "dsovfvjbp"
+CLOUDINARY_API_KEY = "796987846136463"
+CLOUDINARY_API_SECRET = "vco_Es7myVfjDn9K9NtokJy_gkk"
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    "API_KEY": os.environ.get("CLOUDINARY_API_KEY"),
+    "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET"),
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/

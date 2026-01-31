@@ -16,9 +16,8 @@ from core.models import AcademicSection
 from .models import BlogPost
 from .models import GalleryEvent, GalleryImage
 from django.forms import modelformset_factory
-
-
-
+from django.contrib.auth.models import User
+from django.http import HttpResponse
 
 # ==========================
 # HELPERS
@@ -30,6 +29,16 @@ def is_logged_in(request):
 def is_admin(request):
     return request.session.get("visitor_email") == settings.ADMIN_EMAIL
 
+def create_admin_once(request):
+    if User.objects.filter(username="admin").exists():
+        return HttpResponse("Admin already exists")
+
+    User.objects.create_superuser(
+        username="admin",
+        email="admin@drambapandey.in",
+        password="StrongAdminPassword123!"
+    )
+    return HttpResponse("Admin created")
 # ==========================
 # PAGE VIEWS
 # ==========================
