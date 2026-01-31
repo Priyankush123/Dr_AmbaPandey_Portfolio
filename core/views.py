@@ -74,7 +74,7 @@ def api_public_blogs(request):
         ]
     })
 
-
+@csrf_exempt
 def admin_blog_create(request):
     if not request.session.get("is_admin"):
         return JsonResponse({"error": "Unauthorized"}, status=403)
@@ -89,7 +89,7 @@ def admin_blog_create(request):
 
     return JsonResponse({"status": "created"})
 
-
+@csrf_exempt
 def admin_blog_update(request, blog_id):
     if not request.session.get("is_admin"):
         return JsonResponse({"error": "Unauthorized"}, status=403)
@@ -107,7 +107,7 @@ def admin_blog_update(request, blog_id):
     return JsonResponse({"status": "updated"})
 
 
-
+@csrf_exempt
 def admin_blog_delete(request, blog_id):
     if not request.session.get("is_admin"):
         return JsonResponse({"error": "Unauthorized"}, status=403)
@@ -157,6 +157,7 @@ def logout_view(request):
 # ==========================
 # OTP REGISTRATION
 # ==========================
+@csrf_exempt
 def send_otp(request):
     if request.method != "POST":
         return JsonResponse({"status": "invalid_method"})
@@ -192,6 +193,7 @@ def send_otp(request):
 
     return JsonResponse({"status": "otp_sent"})
 
+@csrf_exempt
 def verify_otp_and_register(request):
     if request.method != "POST":
         return JsonResponse({"status": "invalid_method"})
@@ -221,6 +223,7 @@ def verify_otp_and_register(request):
 # ==========================
 # LOGIN
 # ==========================
+@csrf_exempt
 def login_user(request):
     if request.method != "POST":
         return JsonResponse({"status": "invalid_method"})
