@@ -40,6 +40,9 @@ CSRF_TRUSTED_ORIGINS = [
     "https://drambapandey.in",
     "https://www.drambapandey.in",
 ]
+LOGIN_URL = "/login/"
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
 
 import dj_database_url
 import os
@@ -67,6 +70,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = True
+SITE_ID = 1
 
 
 # Application definition
@@ -79,8 +83,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'core',
     'django.contrib.humanize',
+    "django_ratelimit",
 ]
 
 MIDDLEWARE = [
@@ -185,6 +191,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
