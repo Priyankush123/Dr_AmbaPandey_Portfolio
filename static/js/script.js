@@ -28,6 +28,24 @@ document.addEventListener("DOMContentLoaded", function () {
   const sendOtpBtn = document.getElementById("sendOtpBtn");
   const registerBtn = document.getElementById("registerBtn");
   const otpSection = document.getElementById("otpSection");
+  function getCookie(name) {
+    let cookieValue = null;
+
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+
+    return cookieValue;
+  }
 
   // SEND OTP
   if (sendOtpBtn) {
@@ -45,6 +63,14 @@ document.addEventListener("DOMContentLoaded", function () {
       fetch("/api/send-otp/", {
         method: "POST",
         body: data,
+        headers: {
+          "X-CSRFToken": getCookie("csrftoken"),
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+
+        body: new URLSearchParams({
+          email: email,
+        }),
       })
         .then((res) => res.json())
         .then((res) => {
@@ -134,7 +160,7 @@ document.addEventListener("DOMContentLoaded", function () {
             window.location.href = "/";
           } else if (res.status === "temporarily_blocked") {
             alert(
-              "Your account is temporarily blocked. Please try again later."
+              "Your account is temporarily blocked. Please try again later.",
             );
           } else if (res.status === "not_registered") {
             alert("Email not registered or not verified");
@@ -156,9 +182,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const timelineItems = document.querySelectorAll(".timeline-item");
   const observer = new IntersectionObserver(
     (entries) => {
-      entries.forEach((e) => e.isIntersecting && e.target.classList.add("visible"));
+      entries.forEach(
+        (e) => e.isIntersecting && e.target.classList.add("visible"),
+      );
     },
-    { threshold: 0.3 }
+    { threshold: 0.3 },
   );
   timelineItems.forEach((item) => observer.observe(item));
 });
@@ -179,4 +207,3 @@ function closeBlog() {
   document.getElementById("blogOverlay").style.display = "none";
   document.body.style.overflow = "auto";
 }
-
