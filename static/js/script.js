@@ -62,12 +62,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
       fetch("/api/send-otp/", {
         method: "POST",
-        body: data,
         headers: {
           "X-CSRFToken": getCookie("csrftoken"),
-          "Content-Type": "application/x-www-form-urlencoded",
         },
-
         body: new URLSearchParams({
           email: email,
         }),
