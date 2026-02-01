@@ -200,7 +200,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-
+RESEND_API_KEY = os.environ.get("RESEND_API_KEY")
 
 # Session expires after 60 minutes of inactivity
 SESSION_COOKIE_AGE = 60 * 60   # 60 minutes in seconds
