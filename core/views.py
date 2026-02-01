@@ -159,39 +159,35 @@ def logout_view(request):
 # ==========================
 @csrf_exempt
 def send_otp(request):
+    print("🔥 send_otp HIT")   # <--- MUST appear in logs
+
     if request.method != "POST":
+        print("❌ Not POST")
         return JsonResponse({"status": "invalid_method"})
 
     email = request.POST.get("email")
+    print("📧 Email received:", email)
+
     if not email:
+        print("❌ Email missing")
         return JsonResponse({"status": "email_missing"})
 
     visitor, created = Visitor.objects.get_or_create(email=email)
+    print("👤 Visitor object:", visitor.id, "created:", created)
 
-    if visitor.is_verified:
-        return JsonResponse({"status": "already_registered"})
-
-    otp = str(random.randint(100000, 999999))
+    otp = "123456"   # FIXED OTP FOR DEBUG
     visitor.otp = otp
     visitor.is_verified = False
     visitor.save()
 
-    send_mail(
-        subject="Email Verification – Amba Pande Academic Portfolio",
-        message=(
-            "Dear Researcher,\n\n"
-            "Thank you for registering on the academic portfolio of "
-            "Dr. Amba Pande.\n\n"
-            f"Your One-Time Password (OTP): {otp}\n\n"
-            "Please do not share this OTP.\n\n"
-            "Regards,\n"
-            "Academic Portfolio Team"
-        ),
-        from_email=settings.EMAIL_HOST_USER,
-        recipient_list=[email],
-    )
+    print("🔑 OTP saved:", otp)
 
-    return JsonResponse({"status": "otp_sent"})
+    # 🔴 DO NOT SEND EMAIL YET
+    return JsonResponse({
+        "status": "otp_generated",
+        "otp": otp   # expose it temporarily
+    })
+
 
 @csrf_exempt
 def verify_otp_and_register(request):
