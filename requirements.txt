@@ -6,4 +6,4 @@ dj-database-url
 psycopg2-binary
 cloudinary
 django-cloudinary-storage
-django-ratelimit
+resend>=0.6.0
