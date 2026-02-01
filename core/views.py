@@ -182,9 +182,6 @@ def send_otp(request):
 
     return JsonResponse({"status": "otp_sent"})
 
-
-
-
 @csrf_exempt
 def verify_otp_and_register(request):
     if request.method != "POST":
