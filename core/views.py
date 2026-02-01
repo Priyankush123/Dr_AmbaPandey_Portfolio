@@ -171,26 +171,17 @@ def send_otp(request):
     if visitor.is_verified:
         return JsonResponse({"status": "already_registered"})
 
-    otp = "123456"  # TEMP
+    otp = str(random.randint(100000, 999999))
     visitor.otp = otp
     visitor.save()
 
-    try:
-        send_mail(
-            "OTP Test",
-            f"Your OTP is {otp}",
-            settings.EMAIL_HOST_USER,
-            [email],
-            fail_silently=False,
-        )
-    except Exception as e:
-        print("❌ EMAIL ERROR:", str(e))
-        return JsonResponse({
-            "status": "email_failed",
-            "error": str(e)
-        }, status=500)
+    # ❌ DO NOT SEND EMAIL HERE ON RENDER FREE
+    # Email will be added later via background worker / service
+
+    print(f"✅ OTP generated for {email}: {otp}")
 
     return JsonResponse({"status": "otp_sent"})
+
 
 
 
