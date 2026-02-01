@@ -149,6 +149,9 @@ def logout_view(request):
 # ==========================
 # OTP REGISTRATION
 # ==========================
+print("🔎 RESEND_API_KEY:", settings.RESEND_API_KEY)
+print("🔎 Resend module:", resend)
+
 @csrf_exempt
 def send_otp(request):
     if request.method != "POST":
