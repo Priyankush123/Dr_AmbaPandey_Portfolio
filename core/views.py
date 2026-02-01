@@ -18,6 +18,8 @@ from .models import GalleryEvent, GalleryImage
 from django.forms import modelformset_factory
 from django.contrib.auth.models import User
 from django.http import HttpResponse
+import resend
+from django.utils.timezone import now
 
 # ==========================
 # HELPERS
@@ -29,16 +31,6 @@ def is_logged_in(request):
 def is_admin(request):
     return request.session.get("visitor_email") == settings.ADMIN_EMAIL
 
-def create_admin_once(request):
-    if User.objects.filter(username="admin").exists():
-        return HttpResponse("Admin already exists")
-
-    User.objects.create_superuser(
-        username="admin",
-        email="biswaspriyankush@gmail.com",
-        password="Priyankush@123"
-    )
-    return HttpResponse("Admin created")
 # ==========================
 # PAGE VIEWS
 # ==========================
@@ -170,15 +162,23 @@ def send_otp(request):
 
     if visitor.is_verified:
         return JsonResponse({"status": "already_registered"})
+    if visitor.otp_sent_at and (now() - visitor.otp_sent_at).seconds < 60:
+        return JsonResponse({"status": "rate_limited"}, status=429)
 
+    visitor.otp_sent_at = now()
+    visitor.save()
     otp = str(random.randint(100000, 999999))
     visitor.otp = otp
     visitor.save()
 
-    # ❌ DO NOT SEND EMAIL HERE ON RENDER FREE
-    # Email will be added later via background worker / service
+    resend.api_key = settings.RESEND_API_KEY
 
-    print(f"✅ OTP generated for {email}: {otp}")
+    resend.Emails.send({
+        "from": "Amba Pande <onboarding@resend.dev>",
+        "to": email,
+        "subject": "Your OTP – Dr. Amba Pande",
+        "html": f"<p>Your OTP is <strong>{otp}</strong></p>",
+    })
 
     return JsonResponse({"status": "otp_sent"})
 

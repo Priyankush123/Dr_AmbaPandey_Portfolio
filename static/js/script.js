@@ -76,6 +76,8 @@ document.addEventListener("DOMContentLoaded", function () {
           if (res.status === "otp_sent") {
             alert("OTP has been sent to your email");
             otpSection.style.display = "block";
+          } else if (res.status === "rate_limited") {
+            alert("Please wait 60 seconds before requesting another OTP.");
           } else if (res.status === "already_registered") {
             alert("This email is already registered. Please login.");
             window.location.href = "/login/";

@@ -7,7 +7,7 @@ class Visitor(models.Model):
     otp = models.CharField(max_length=6, blank=True, null=True)
     is_verified = models.BooleanField(default=False)
     last_login = models.DateTimeField(null=True, blank=True)
-
+    otp_sent_at = models.DateTimeField(null=True, blank=True)
     blocked_until = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
