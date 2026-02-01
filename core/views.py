@@ -163,42 +163,35 @@ def send_otp(request):
         return JsonResponse({"status": "invalid_method"}, status=405)
 
     email = request.POST.get("email")
-
     if not email:
         return JsonResponse({"status": "email_missing"}, status=400)
 
-    visitor, created = Visitor.objects.get_or_create(email=email)
+    visitor, _ = Visitor.objects.get_or_create(email=email)
 
     if visitor.is_verified:
         return JsonResponse({"status": "already_registered"})
 
-    # Generate OTP
-    otp = str(random.randint(100000, 999999))
+    otp = "123456"  # TEMP
     visitor.otp = otp
-    visitor.is_verified = False
     visitor.save()
 
     try:
         send_mail(
-            subject="Email Verification – Dr. Amba Pande",
-            message=(
-                "Dear Researcher,\n\n"
-                "Thank you for registering on the academic portfolio of "
-                "Dr. Amba Pande.\n\n"
-                f"Your One-Time Password (OTP): {otp}\n\n"
-                "Please do not share this OTP.\n\n"
-                "Regards,\n"
-                "Academic Portfolio Team"
-            ),
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[email],
+            "OTP Test",
+            f"Your OTP is {otp}",
+            settings.EMAIL_HOST_USER,
+            [email],
             fail_silently=False,
         )
     except Exception as e:
-        # Email failure should not expose stack trace to user
-        return JsonResponse({"status": "email_failed"}, status=500)
+        print("❌ EMAIL ERROR:", str(e))
+        return JsonResponse({
+            "status": "email_failed",
+            "error": str(e)
+        }, status=500)
 
     return JsonResponse({"status": "otp_sent"})
+
 
 
 @csrf_exempt
