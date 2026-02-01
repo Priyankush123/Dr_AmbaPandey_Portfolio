@@ -149,8 +149,6 @@ def logout_view(request):
 # ==========================
 # OTP REGISTRATION
 # ==========================
-print("🔎 RESEND_API_KEY:", settings.RESEND_API_KEY)
-print("🔎 Resend module:", resend)
 
 @csrf_exempt
 def send_otp(request):
@@ -177,7 +175,7 @@ def send_otp(request):
             resend.api_key = settings.RESEND_API_KEY
 
             resend.Emails.send({
-                "from": "Amba Pande <onboarding@resend.dev>",
+                "from": "onboarding@resend.dev",
                 "to": email,
                 "subject": "Your OTP – Dr. Amba Pande",
                 "html": f"<p>Your OTP is <strong>{otp}</strong></p>",
