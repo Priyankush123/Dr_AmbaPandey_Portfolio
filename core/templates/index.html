@@ -328,13 +328,12 @@
         </div>
       </div>
     </section>
-    <section id="gallery" class="section">
+   <section id="gallery" class="section">
   <h2 class="section-title">Conferences & Awards</h2>
 
   {% for event in gallery_events %}
   <div class="gallery-event">
     <h3 class="gallery-title">{{ event.title }}</h3>
-    <p class="gallery-description">{{ event.description }}</p>
 
     <div class="gallery-grid">
       {% for img in event.images.all %}
@@ -344,6 +343,7 @@
   </div>
   {% endfor %}
 </section>
+
 
 
     <!-- ================= PUBLICATIONS (COLLAPSIBLE) ================= -->
