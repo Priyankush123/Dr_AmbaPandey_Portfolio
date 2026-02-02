@@ -107,23 +107,9 @@ def is_admin(request):
 # PAGE VIEWS
 # ==========================
 def home(request):
-    books = Paper.objects.filter(category="book")
-    publications = Paper.objects.filter(category="publication")
+    return render(request, "index.html", {})
 
-    blogs = BlogPost.objects.filter(is_published=True)
-    gallery_events = GalleryEvent.objects.prefetch_related("images")
-    print("AUTH:", request.user.is_authenticated)
-    print("USER:", request.user)
-    return render(
-        request,
-        "index.html",
-        {
-            "books": books,
-            "publications": publications,
-            "blogs": blogs,
-            "gallery_events": gallery_events
-        }
-    )
+
 def api_public_blogs(request):
     blogs = BlogPost.objects.filter(is_published=True).order_by("-created_at")
 
