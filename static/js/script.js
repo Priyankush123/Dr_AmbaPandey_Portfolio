@@ -44,7 +44,6 @@ document.addEventListener("DOMContentLoaded", function () {
   /* =========================
      REGISTER PAGE 
   ========================== */
-  const registerBtn = document.getElementById("registerBtn");
   function getCookie(name) {
     let cookieValue = null;
 
@@ -65,27 +64,45 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // VERIFY OTP & REGISTER
+  const registerBtn = document.getElementById("registerBtn");
+
   if (registerBtn) {
     registerBtn.addEventListener("click", () => {
       const name = document.getElementById("name").value.trim();
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
 
+      if (!name || !email || !password) {
+        alert("Please fill all fields");
+        return;
+      }
+
       fetch("/api/register/", {
         method: "POST",
         headers: {
           "X-CSRFToken": getCookie("csrftoken"),
+          "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: new URLSearchParams({ name, email, password }),
+        body: new URLSearchParams({
+          name: name,
+          email: email,
+          password: password,
+        }),
       })
         .then((res) => res.json())
         .then((res) => {
           if (res.status === "registered") {
             alert("Registration successful");
             window.location.href = "/";
+          } else if (res.status === "user_exists") {
+            alert("User already exists. Please login.");
+            window.location.href = "/login/";
           } else {
             alert("Registration failed");
           }
+        })
+        .catch(() => {
+          alert("Server error");
         });
     });
   }
@@ -100,12 +117,21 @@ document.addEventListener("DOMContentLoaded", function () {
       const email = document.getElementById("loginEmail").value.trim();
       const password = document.getElementById("loginPassword").value.trim();
 
+      if (!email || !password) {
+        alert("Please fill all fields");
+        return;
+      }
+
       fetch("/api/login/", {
         method: "POST",
         headers: {
           "X-CSRFToken": getCookie("csrftoken"),
+          "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: new URLSearchParams({ email, password }),
+        body: new URLSearchParams({
+          email: email,
+          password: password,
+        }),
       })
         .then((res) => res.json())
         .then((res) => {

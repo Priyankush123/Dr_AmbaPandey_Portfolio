@@ -29,6 +29,7 @@
       </p>
 
       <form class="auth-form" id="registerForm">
+         {% csrf_token %}
         <label>Name</label>
         <input type="text" id="name" placeholder="Your Full Name" required />
 

@@ -28,6 +28,7 @@
       </p>
 
       <form class="auth-form" id="loginForm">
+         {% csrf_token %}
         <label>Email</label>
         <input
           type="email"
