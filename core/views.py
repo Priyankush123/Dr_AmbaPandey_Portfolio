@@ -107,7 +107,16 @@ def is_admin(request):
 # PAGE VIEWS
 # ==========================
 def home(request):
-    return render(request, "index.html", {})
+    return render(
+        request,
+        "index.html",
+        {
+            "blogs": BlogPost.objects.filter(is_published=True),
+            "gallery_events": GalleryEvent.objects.prefetch_related("images"),
+            "publications": Paper.objects.filter(category="publication"),
+        }
+    )
+
 
 
 def api_public_blogs(request):
