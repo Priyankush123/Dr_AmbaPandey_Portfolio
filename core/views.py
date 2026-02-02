@@ -46,11 +46,13 @@ def register_user(request):
         username=email,
         email=email,
         password=password,
-        first_name=name,
+        first_name=name
     )
 
     login(request, user)
+
     return JsonResponse({"status": "registered"})
+
 
 
 def login_view(request):
@@ -65,10 +67,22 @@ def login_user(request):
     email = request.POST.get("email")
     password = request.POST.get("password")
 
-    user = authenticate(request, username=email, password=password)
+    print("LOGIN ATTEMPT:", email, password)
+
+    user = authenticate(
+        request,
+        username=email,
+        password=password
+    )
 
     if user is None:
+        print("AUTH FAILED")
         return JsonResponse({"status": "invalid_credentials"}, status=401)
+
+    login(request, user)
+    print("LOGIN SUCCESS:", request.user.email)
+
+    return JsonResponse({"status": "logged_in"})
 
     login(request, user)
     return JsonResponse({"status": "logged_in"})
@@ -100,6 +114,8 @@ def home(request):
 
     blogs = BlogPost.objects.filter(is_published=True)
     gallery_events = GalleryEvent.objects.prefetch_related("images")
+    print("AUTH:", request.user.is_authenticated)
+    print("USER:", request.user)
     return render(
         request,
         "index.html",

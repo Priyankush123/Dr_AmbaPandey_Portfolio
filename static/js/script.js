@@ -117,17 +117,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const email = document.getElementById("loginEmail").value.trim();
       const password = document.getElementById("loginPassword").value.trim();
 
-      if (!email || !password) {
-        alert("Please fill all fields");
-        return;
-      }
-
       fetch("/api/login/", {
         method: "POST",
-        headers: {
-          "X-CSRFToken": getCookie("csrftoken"),
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
         body: new URLSearchParams({
           email: email,
           password: password,
@@ -135,12 +126,15 @@ document.addEventListener("DOMContentLoaded", function () {
       })
         .then((res) => res.json())
         .then((res) => {
+          console.log("LOGIN RESPONSE:", res);
+
           if (res.status === "logged_in") {
             window.location.href = "/";
           } else {
-            alert("Invalid credentials");
+            alert("Login failed");
           }
-        });
+        })
+        .catch(() => alert("Server error"));
     });
   }
 

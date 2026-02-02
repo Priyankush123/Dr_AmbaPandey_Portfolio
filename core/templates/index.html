@@ -57,10 +57,10 @@
         <a href="#contact">Contact</a>
         {% if request.session.is_admin %}
         <a href="{% url 'admin_dashboard' %}" class="auth-link">Dashboard</a>
-        {% endif %} {% if request.session.visitor_id %}
-        <a href="{% url 'logout' %}" class="auth-link">Logout</a>
+        {% endif %} {% if request.user.is_authenticated %}
+        <a href="{% url 'logout' %}">Logout</a>
         {% else %}
-        <a href="{% url 'login' %}" class="auth-link">Login</a>
+        <a href="{% url 'login' %}">Login</a>
         {% endif %}
       </nav>
     </header>
