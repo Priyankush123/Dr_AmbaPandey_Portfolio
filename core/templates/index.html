@@ -31,39 +31,43 @@
 </div>
     <!-- ================= HEADER ================= -->
     <header class="header">
-      <div class="header-left">
-        <div class="dot"></div>
-        <span class="name">Dr. Amba Pande</span>
-        <span class="role"
-          >Documentation Officer, School of International Studies, JNU</span
-        >
-      </div>
+  <div class="header-left">
+    <div class="dot"></div>
+    <span class="name">Dr. Amba Pande</span>
+    <span class="role">
+      Documentation Officer, School of International Studies, JNU
+    </span>
+  </div>
 
-      <button
-        class="menu-toggle"
-        id="menuToggle"
-        aria-label="Toggle menu"
-        aria-expanded="false"
-      >
-        ☰
-      </button>
+  <button
+    class="menu-toggle"
+    id="menuToggle"
+    aria-label="Toggle menu"
+    aria-expanded="false"
+  >
+    ☰
+  </button>
 
-      <nav class="header-right" id="navMenu">
-        <a href="#about">About</a>
-        <a href="#profile">Research</a>
-        <a href="#selected-works">Selected Works</a>
-        <a href="#publications">Publications</a>
-        <a href="#books">Books</a>
-        <a href="#contact">Contact</a>
-        {% if request.session.is_admin %}
-        <a href="{% url 'admin_dashboard' %}" class="auth-link">Dashboard</a>
-        {% endif %} {% if request.user.is_authenticated %}
-        <a href="{% url 'logout' %}">Logout</a>
-        {% else %}
-        <a href="{% url 'login' %}">Login</a>
-        {% endif %}
-      </nav>
-    </header>
+  <nav class="header-right" id="navMenu">
+    <a href="#about">About</a>
+    <a href="#profile">Research</a>
+    <a href="#selected-works">Selected Works</a>
+    <a href="#publications">Publications</a>
+    <a href="#books">Books</a>
+    <a href="#contact">Contact</a>
+
+    {% if request.user.is_authenticated and request.user.email == "ambapande@gmail.com" %}
+      <a href="{% url 'admin_dashboard' %}" class="auth-link">Dashboard</a>
+    {% endif %}
+
+    {% if request.user.is_authenticated %}
+      <a href="{% url 'logout' %}">Logout</a>
+    {% else %}
+      <a href="{% url 'login' %}">Login</a>
+    {% endif %}
+  </nav>
+</header>
+
 
     <!-- ================= HERO ================= -->
     <section class="main">
@@ -452,36 +456,38 @@
     </section>
 
     <section id="pdf-library" class="section">
-      <h2>Research Papers & PDFs</h2>
+  <h2>Research Papers & PDFs</h2>
 
-      {% if publications %}
-      <ul class="styled-list">
-        {% for paper in publications %}
-        <li>
-          {{ paper.title }} — {% if request.session.visitor_id %}
-          <a
-            href="{% url 'view_pdf' paper.id %}"
-            target="_blank"
-            class="links_edit"
-          >
-            View PDF
-          </a>
-          {% else %}
-          <a
-            href="{% url 'login' %}"
-            class="links_edit"
-            title="Login required to access PDF"
-          >
-            View PDF (Login Required)
-          </a>
-          {% endif %}
-        </li>
-        {% endfor %}
-      </ul>
+  {% if publications %}
+  <ul class="styled-list">
+    {% for paper in publications %}
+    <li>
+      {{ paper.title }} —
+      {% if request.user.is_authenticated %}
+        <a
+          href="{% url 'view_pdf' paper.id %}"
+          target="_blank"
+          class="links_edit"
+        >
+          View PDF
+        </a>
       {% else %}
-      <p>No PDFs available.</p>
+        <a
+          href="{% url 'login' %}"
+          class="links_edit"
+          title="Login required to access PDF"
+        >
+          View PDF (Login Required)
+        </a>
       {% endif %}
-    </section>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>No PDFs available.</p>
+  {% endif %}
+</section>
+
 
     <section id="awards" class="section">
       <h2>Awards & Recognitions</h2>
