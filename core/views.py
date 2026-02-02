@@ -1,14 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, FileResponse
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
-from django.core.mail import send_mail
 from django.conf import settings
 from django.utils import timezone
 from django.db.models import Q
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
 from datetime import timedelta
-import random
 import os
 from django.views.decorators.http import require_POST
 from .models import Visitor, Paper, AccessLog
@@ -216,6 +214,10 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def view_pdf(request, paper_id):
+    AccessLog.objects.create(
+    user=request.user,
+    paper=paper
+    )
     paper = get_object_or_404(Paper, id=paper_id)
     return redirect(paper.pdf.url)
 

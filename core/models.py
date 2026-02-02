@@ -31,7 +31,7 @@ class Paper(models.Model):
         return self.title   
     
 class AccessLog(models.Model):
-    visitor = models.ForeignKey(Visitor, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     paper = models.ForeignKey(Paper, on_delete=models.CASCADE)
     accessed_at = models.DateTimeField(auto_now_add=True)
 
