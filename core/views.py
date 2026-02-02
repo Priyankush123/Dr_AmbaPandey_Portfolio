@@ -27,7 +27,7 @@ def register_view(request):
     return render(request, "register.html")
 
 
-@csrf_protect
+@csrf_exempt
 def register_user(request):
     if request.method != "POST":
         return JsonResponse({"status": "invalid_method"}, status=405)
@@ -57,7 +57,7 @@ def login_view(request):
     return render(request, "login.html")
 
 
-@csrf_protect
+@csrf_exempt
 def login_user(request):
     if request.method != "POST":
         return JsonResponse({"status": "invalid_method"}, status=405)

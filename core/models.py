@@ -1,17 +1,18 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 class Visitor(models.Model):
-    name = models.CharField(max_length=200, blank=True)
-    email = models.EmailField(unique=True)
-    otp = models.CharField(max_length=6, blank=True, null=True)
-    is_verified = models.BooleanField(default=False)
-    last_login = models.DateTimeField(null=True, blank=True)
-    otp_sent_at = models.DateTimeField(null=True, blank=True)
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name="visitor_profile"
+    )
     blocked_until = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return self.email
+        return self.user.email
+
 
 class Paper(models.Model):
     CATEGORY_CHOICES = [
