@@ -81,11 +81,15 @@ def logout_view(request):
 # HELPERS
 # ==========================
 def is_logged_in(request):
-    return request.session.get("visitor_id") is not None
+    return request.user.is_authenticated
 
 
 def is_admin(request):
-    return request.session.get("visitor_email") == settings.ADMIN_EMAIL
+    return (
+        request.user.is_authenticated and
+        request.user.email == settings.ADMIN_EMAIL
+    )
+
 
 # ==========================
 # PAGE VIEWS
@@ -124,7 +128,7 @@ def api_public_blogs(request):
 
 @csrf_exempt
 def admin_blog_create(request):
-    if not request.session.get("is_admin"):
+    if not is_admin(request):
         return JsonResponse({"error": "Unauthorized"}, status=403)
 
     BlogPost.objects.create(
@@ -139,7 +143,7 @@ def admin_blog_create(request):
 
 @csrf_exempt
 def admin_blog_update(request, blog_id):
-    if not request.session.get("is_admin"):
+    if not is_admin(request):
         return JsonResponse({"error": "Unauthorized"}, status=403)
 
     blog = get_object_or_404(BlogPost, id=blog_id)
@@ -157,7 +161,7 @@ def admin_blog_update(request, blog_id):
 
 @csrf_exempt
 def admin_blog_delete(request, blog_id):
-    if not request.session.get("is_admin"):
+    if not is_admin(request):
         return JsonResponse({"error": "Unauthorized"}, status=403)
 
     BlogPost.objects.filter(id=blog_id).delete()
@@ -203,9 +207,8 @@ def view_pdf(request, paper_id):
 # ADMIN DASHBOARD
 # ==========================
 def admin_dashboard(request):
-    if not is_logged_in(request):
+    if not request.user.is_authenticated:
         return redirect("login")
-
     if not is_admin(request):
         return JsonResponse({"status": "forbidden"}, status=403)
 
@@ -236,7 +239,7 @@ def admin_dashboard(request):
     )
 
 def admin_upload_pdf(request):
-    if not request.session.get("visitor_id") or not request.session.get("is_admin"):
+    if not request.user.is_authenticated or not is_admin(request):
         return redirect("/login/")
 
     if request.method == "POST":
@@ -260,7 +263,7 @@ def admin_upload_pdf(request):
     return render(request, "admin_upload.html")
 
 def admin_edit_pdf(request, paper_id):
-    if not request.session.get("is_admin"):
+    if not is_admin(request):
         return redirect("/login/")
 
     paper = get_object_or_404(Paper, id=paper_id)
@@ -280,7 +283,7 @@ def admin_edit_pdf(request, paper_id):
 
 @require_POST
 def admin_delete_pdf(request, paper_id):
-    if not request.session.get("is_admin"):
+    if not is_admin(request):
         return JsonResponse({"status": "forbidden"}, status=403)
 
     paper = get_object_or_404(Paper, id=paper_id)
@@ -310,14 +313,14 @@ def toggle_block_user(request, visitor_id):
     return JsonResponse({"status": status})
 
 def admin_gallery_dashboard(request):
-    if not request.session.get("is_admin"):
+    if not is_admin(request):
         return redirect("login")
 
     events = GalleryEvent.objects.prefetch_related("images").order_by("-created_at")
     return render(request, "admin/gallery_dashboard.html", {"events": events})
 
 def admin_gallery_add(request):
-    if not request.session.get("is_admin"):
+    if not is_admin(request):
         return redirect("login")
 
     if request.method == "POST":
@@ -344,7 +347,7 @@ def admin_gallery_add(request):
 
 
 def admin_gallery_delete(request, event_id):
-    if not request.session.get("is_admin"):
+    if not is_admin(request):
         return JsonResponse({"error": "Unauthorized"}, status=403)
 
     GalleryEvent.objects.filter(id=event_id).delete()
