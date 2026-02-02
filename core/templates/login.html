@@ -1,60 +1,62 @@
 {% load static %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login | Dr. Amba Pande</title>
-    <link rel="icon" type="images/logo.webp" href="{% static 'images/logo.webp' %}">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
+    <link
+      rel="icon"
+      type="images/logo.webp"
+      href="{% static 'images/logo.webp' %}"
+    />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  </head>
 
-<body class="auth-page">
-
-<header class="header auth-header">
-    <div class="header-left">
+  <body class="auth-page">
+    <header class="header auth-header">
+      <div class="header-left">
         <div class="dot"></div>
         <span class="name">Dr. Amba Pande</span>
-    </div>
-</header>
-<!-- ================= LOGIN FORM ================= -->
-<section class="auth-container">
-    <h2>Login</h2>
-    <p class="auth-text">
+      </div>
+    </header>
+    <!-- ================= LOGIN FORM ================= -->
+    <section class="auth-container">
+      <h2>Login</h2>
+      <p class="auth-text">
         Please enter your name and registered email to continue.
-    </p>
+      </p>
 
-    <form class="auth-form" id="loginForm">
-
-        <label for="loginName">Name</label>
+      <form class="auth-form" id="loginForm">
+        <label>Email</label>
         <input
-            type="text"
-            id="loginName"
-            placeholder="Your full name"
+          type="email"
+          id="loginEmail"
+          placeholder="Your Logged-in Email"
+          required
+        />
+
+        <label>Password</label>
+        <div class="password-wrapper">
+          <input
+            type="password"
+            id="loginPassword"
+            placeholder="Enter your password"
             required
-        >
+          />
+          <span class="toggle-password" data-target="loginPassword">👁️</span>
+        </div>
 
-        <label for="loginEmail">Email</label>
-        <input
-            type="email"
-            id="loginEmail"
-            placeholder="Your registered email"
-            required
-        >
+        <button type="button" id="loginBtn">Login</button>
+      </form>
 
-        <button type="button" id="loginBtn">
-            Login
-        </button>
-    </form>
-
-    <p class="auth-switch">
+      <p class="auth-switch">
         Not registered?
         <a href="{% url 'register' %}">Register here</a>
-    </p>
-</section>
+      </p>
+    </section>
 
-<!-- ================= JS ================= -->
-<script src="{% static 'js/script.js' %}"></script>
-
-</body>
+    <!-- ================= JS ================= -->
+    <script src="{% static 'js/script.js' %}"></script>
+  </body>
 </html>

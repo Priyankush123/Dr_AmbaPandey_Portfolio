@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, FileResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.core.mail import send_mail
 from django.conf import settings
 from django.utils import timezone
@@ -18,9 +18,65 @@ from .models import GalleryEvent, GalleryImage
 from django.forms import modelformset_factory
 from django.contrib.auth.models import User
 from django.http import HttpResponse
-import resend
 from django.utils.timezone import now
+from django.contrib.auth import authenticate, login, logout
 
+
+
+def register_view(request):
+    return render(request, "register.html")
+
+
+@csrf_protect
+def register_user(request):
+    if request.method != "POST":
+        return JsonResponse({"status": "invalid_method"}, status=405)
+
+    name = request.POST.get("name")
+    email = request.POST.get("email")
+    password = request.POST.get("password")
+
+    if not all([name, email, password]):
+        return JsonResponse({"status": "missing_fields"}, status=400)
+
+    if User.objects.filter(username=email).exists():
+        return JsonResponse({"status": "user_exists"}, status=409)
+
+    user = User.objects.create_user(
+        username=email,
+        email=email,
+        password=password,
+        first_name=name,
+    )
+
+    login(request, user)
+    return JsonResponse({"status": "registered"})
+
+
+def login_view(request):
+    return render(request, "login.html")
+
+
+@csrf_protect
+def login_user(request):
+    if request.method != "POST":
+        return JsonResponse({"status": "invalid_method"}, status=405)
+
+    email = request.POST.get("email")
+    password = request.POST.get("password")
+
+    user = authenticate(request, username=email, password=password)
+
+    if user is None:
+        return JsonResponse({"status": "invalid_credentials"}, status=401)
+
+    login(request, user)
+    return JsonResponse({"status": "logged_in"})
+
+
+def logout_view(request):
+    logout(request)
+    return redirect("/")
 # ==========================
 # HELPERS
 # ==========================
@@ -133,145 +189,14 @@ def api_blog_detail(request, blog_id):
     })
 
 
-
-def register_view(request):
-    return render(request, "register.html")
-
-
-def login_view(request):
-    return render(request, "login.html")
-
-
-def logout_view(request):
-    request.session.flush()
-    return redirect("home")
-
-# ==========================
-# OTP REGISTRATION
-# ==========================
-
-@csrf_exempt
-def send_otp(request):
-    if request.method != "POST":
-        return JsonResponse({"status": "invalid_method"}, status=405)
-
-    email = request.POST.get("email")
-    if not email:
-        return JsonResponse({"status": "email_missing"}, status=400)
-
-    visitor, _ = Visitor.objects.get_or_create(email=email)
-
-    if visitor.is_verified:
-        return JsonResponse({"status": "already_registered"})
-
-    # Generate OTP
-    otp = str(random.randint(100000, 999999))
-    visitor.otp = otp
-    visitor.save()
-
-    # 🚨 Email is OPTIONAL – must not crash server
-    if resend and settings.RESEND_API_KEY:
-        try:
-            resend.api_key = settings.RESEND_API_KEY
-
-            resend.Emails.send({
-                "from": "onboarding@resend.dev",
-                "to": email,
-                "subject": "Your OTP – Dr. Amba Pande",
-                "html": f"<p>Your OTP is <strong>{otp}</strong></p>",
-            })
-
-            print(f"✅ OTP email sent to {email}")
-
-        except Exception as e:
-            # Log error but DO NOT fail request
-            print("❌ Resend email failed:", str(e))
-
-    else:
-        print("⚠️ Resend not configured. OTP:", otp)
-
-    return JsonResponse({"status": "otp_sent"})
-
-@csrf_exempt
-def verify_otp_and_register(request):
-    if request.method != "POST":
-        return JsonResponse({"status": "invalid_method"})
-
-    name = request.POST.get("name")
-    email = request.POST.get("email")
-    otp = request.POST.get("otp")
-
-    if not all([name, email, otp]):
-        return JsonResponse({"status": "missing_fields"})
-
-    try:
-        visitor = Visitor.objects.get(email=email)
-    except Visitor.DoesNotExist:
-        return JsonResponse({"status": "email_not_found"})
-
-    if visitor.otp != otp:
-        return JsonResponse({"status": "wrong_otp"})
-
-    visitor.name = name
-    visitor.is_verified = True
-    visitor.otp = None
-    visitor.save()
-
-    return JsonResponse({"status": "verified"})
-
-# ==========================
-# LOGIN
-# ==========================
-@csrf_exempt
-def login_user(request):
-    if request.method != "POST":
-        return JsonResponse({"status": "invalid_method"})
-
-    email = request.POST.get("email")
-    name = request.POST.get("name")
-
-    if not email or not name:
-        return JsonResponse({"status": "missing_fields"})
-
-    try:
-        visitor = Visitor.objects.get(email=email, is_verified=True)
-    except Visitor.DoesNotExist:
-        return JsonResponse({"status": "not_registered"})
-
-    # 🔒 BLOCK CHECK
-    if visitor.blocked_until and visitor.blocked_until > timezone.now():
-        return JsonResponse({
-            "status": "temporarily_blocked",
-            "blocked_until": visitor.blocked_until.isoformat()
-        })
-
-    # Update last login
-    visitor.last_login = timezone.now()
-    visitor.save()
-
-    # SESSION
-    request.session["visitor_id"] = visitor.id
-    request.session["visitor_email"] = visitor.email
-    request.session["visitor_name"] = visitor.name
-    request.session["is_admin"] = (visitor.email == settings.ADMIN_EMAIL)
-
-    return JsonResponse({"status": "logged_in"})
-
-
 # ==========================
 # PDF VIEW (PROTECTED)
 # ==========================
+from django.contrib.auth.decorators import login_required
+
+@login_required
 def view_pdf(request, paper_id):
-    if not is_logged_in(request):
-        return redirect("login")
-
     paper = get_object_or_404(Paper, id=paper_id)
-
-    AccessLog.objects.create(
-        visitor_id=request.session["visitor_id"],
-        paper=paper
-    )
-
     return redirect(paper.pdf.url)
 
 # ==========================

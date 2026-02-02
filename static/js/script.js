@@ -21,13 +21,30 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
   }
+  /* =========================
+   PASSWORD SHOW / HIDE
+========================= */
+  document.querySelectorAll(".toggle-password").forEach((toggle) => {
+    toggle.addEventListener("click", () => {
+      const inputId = toggle.getAttribute("data-target");
+      const input = document.getElementById(inputId);
+
+      if (!input) return;
+
+      if (input.type === "password") {
+        input.type = "text";
+        toggle.textContent = "🙈";
+      } else {
+        input.type = "password";
+        toggle.textContent = "👁️";
+      }
+    });
+  });
 
   /* =========================
-     REGISTER PAGE – OTP FLOW
+     REGISTER PAGE 
   ========================== */
-  const sendOtpBtn = document.getElementById("sendOtpBtn");
   const registerBtn = document.getElementById("registerBtn");
-  const otpSection = document.getElementById("otpSection");
   function getCookie(name) {
     let cookieValue = null;
 
@@ -47,81 +64,28 @@ document.addEventListener("DOMContentLoaded", function () {
     return cookieValue;
   }
 
-  // SEND OTP
-  if (sendOtpBtn) {
-    sendOtpBtn.addEventListener("click", () => {
-      const email = document.getElementById("email")?.value.trim();
-
-      if (!email) {
-        alert("Please enter your email first");
-        return;
-      }
-
-      const data = new FormData();
-      data.append("email", email);
-
-      fetch("/api/send-otp/", {
-        method: "POST",
-        body: new URLSearchParams({
-          email: email,
-        }),
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          console.log("OTP RESPONSE:", res);
-
-          if (res.status === "otp_sent") {
-            alert("OTP has been sent to your email");
-            otpSection.style.display = "block";
-          } else if (res.status === "rate_limited") {
-            alert("Please wait 60 seconds before requesting another OTP.");
-          } else if (res.status === "already_registered") {
-            alert("This email is already registered. Please login.");
-            window.location.href = "/login/";
-          } else {
-            alert("Failed to send OTP. Please try again.");
-          }
-        })
-        .catch(() => {
-          alert("Server error while sending OTP");
-        });
-    });
-  }
-
   // VERIFY OTP & REGISTER
   if (registerBtn) {
     registerBtn.addEventListener("click", () => {
-      const name = document.getElementById("name")?.value.trim();
-      const email = document.getElementById("email")?.value.trim();
-      const otp = document.getElementById("otp")?.value.trim();
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
 
-      if (!name || !email || !otp) {
-        alert("Please fill all fields");
-        return;
-      }
-
-      const data = new FormData();
-      data.append("name", name);
-      data.append("email", email);
-      data.append("otp", otp);
-
-      fetch("/api/verify-register/", {
+      fetch("/api/register/", {
         method: "POST",
-        body: data,
+        headers: {
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+        body: new URLSearchParams({ name, email, password }),
       })
         .then((res) => res.json())
         .then((res) => {
-          if (res.status === "verified") {
-            alert("Registration successful. Please login.");
-            window.location.href = "/login/";
-          } else if (res.status === "wrong_otp") {
-            alert("Incorrect OTP. Please try again.");
+          if (res.status === "registered") {
+            alert("Registration successful");
+            window.location.href = "/";
           } else {
-            alert("Registration failed. Please retry.");
+            alert("Registration failed");
           }
-        })
-        .catch(() => {
-          alert("Server error during registration");
         });
     });
   }
@@ -133,43 +97,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (loginBtn) {
     loginBtn.addEventListener("click", () => {
-      const name = document.getElementById("loginName")?.value.trim();
-      const email = document.getElementById("loginEmail")?.value.trim();
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value.trim();
 
-      if (!name || !email) {
-        alert("Please fill all fields");
-        return;
-      }
-
-      const data = new FormData();
-      data.append("name", name);
-      data.append("email", email);
-
-      fetch("/api/login-user/", {
+      fetch("/api/login/", {
         method: "POST",
-        body: data,
+        headers: {
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+        body: new URLSearchParams({ email, password }),
       })
         .then((res) => res.json())
         .then((res) => {
           if (res.status === "logged_in") {
-            alert("Login successful");
             window.location.href = "/";
-          } else if (res.status === "temporarily_blocked") {
-            alert(
-              "Your account is temporarily blocked. Please try again later.",
-            );
-          } else if (res.status === "not_registered") {
-            alert("Email not registered or not verified");
           } else {
-            alert("Login failed");
+            alert("Invalid credentials");
           }
-        })
-
-        .catch(() => {
-          alert("Server error during login");
         });
     });
   }
+
   /* =========================
    TIMELINE SCROLL ANIMATION
 ========================= */

@@ -4,21 +4,17 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-
     # ==========================
     # PUBLIC PAGES
     # ==========================
     path("", views.home, name="home"),
+
     path("register/", views.register_view, name="register"),
     path("login/", views.login_view, name="login"),
-    path("logout/", views.logout_view, name="logout"),
 
-    # ==========================
-    # AUTH / OTP APIs
-    # ==========================
-    path("api/send-otp/", views.send_otp, name="send_otp"),
-    path("api/verify-register/", views.verify_otp_and_register, name="verify_register"),
-    path("api/login-user/", views.login_user, name="login_user"),
+    path("api/register/", views.register_user),
+    path("api/login/", views.login_user),
+    path("logout/", views.logout_view),
 
 
     # ==========================
